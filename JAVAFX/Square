@@ -1,0 +1,104 @@
+package application;
+	
+import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.*;
+import javafx.scene.input.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+public class Main extends Application {
+  private static final int MOVE_AMOUNT = 50;
+  private static int moveCount = 0;
+
+  public static void main(String[] args) { launch(args); }
+  @Override public void start(Stage stage) throws Exception {
+	Text corner = new Text(10, 50, "No corner");
+	corner.setX(500);
+	Text moveCountText = new Text(10, 50, "Move Count: 0");
+    Rectangle rect = new Rectangle(50, 50, Color.rgb(0, 0, 0));
+    Group group = new Group(rect, corner, moveCountText);
+    Scene scene = new Scene(group, 600, 400);
+    moveOnKeyPress(scene, rect, corner, moveCountText);
+    stage.setScene(scene);
+    stage.show();
+  }
+
+  private void moveOnKeyPress(Scene scene, Rectangle rect, Text corner, Text moveCountText) {
+    scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override public void handle(KeyEvent event) {
+        switch (event.getCode()) {
+          case UP:    
+        	  CheckUp(rect, moveCountText);
+        	  ChangeColor(rect); 
+        	  CheckCorner(rect, corner);
+        	  break;
+          case RIGHT: 
+        	  CheckRight(rect, moveCountText);
+        	  ChangeColor(rect);
+        	  CheckCorner(rect, corner);
+        	  break;
+          case DOWN:  
+        	  CheckDown(rect, moveCountText);
+        	  ChangeColor(rect);
+        	  CheckCorner(rect, corner);
+          	  break;
+          case LEFT:  
+        	  CheckLeft(rect, moveCountText);
+        	  ChangeColor(rect);
+        	  CheckCorner(rect, corner);
+        	  break;
+        }
+      }
+    });
+  }
+  
+  private void ChangeColor(Rectangle rect){
+	  int a = (int)(Math.random() * 256);
+	  int b = (int)(Math.random() * 256);
+	  int c = (int)(Math.random() * 256);
+	  rect.setFill(Color.rgb(a, b, c));
+  }
+  private void CheckCorner(Rectangle rect, Text corner){
+
+	  if(rect.getX() == 0 && rect.getY() == 0)
+		  corner.setText("TOP LEFT");
+	  else if(rect.getX() == 550 && rect.getY() == 0)
+		  corner.setText("TOP RIGHT");
+	  else if(rect.getX() == 0 && rect.getY() == 350)
+		  corner.setText("BOTTOM LEFT");
+	  else if(rect.getX() == 550 && rect.getY() == 350)
+		  corner.setText("BOTTOM RIGHT");
+	  else
+		  corner.setText("No corner");
+  }
+  private void CheckRight(Rectangle rect, Text moveCountText){
+	  if(rect.getX() + MOVE_AMOUNT <= 550){
+    	  rect.setX(rect.getX() + MOVE_AMOUNT);
+    	  moveCount++;
+    	  moveCountText.setText("Move Count: " + moveCount);
+	  }
+  }
+  private void CheckLeft(Rectangle rect, Text moveCountText){
+	  if(rect.getX() - MOVE_AMOUNT >= 0){
+    	  rect.setX(rect.getX() - MOVE_AMOUNT);
+    	  moveCount++;
+    	  moveCountText.setText("Move Count: " + moveCount);
+	  }
+  }
+  private void CheckUp(Rectangle rect, Text moveCountText){
+	  if(rect.getY() - MOVE_AMOUNT >= 0){
+    	  rect.setY(rect.getY() - MOVE_AMOUNT);
+    	  moveCount++;
+    	  moveCountText.setText("Move Count: " + moveCount);
+	  }
+  }
+  private void CheckDown(Rectangle rect, Text moveCountText){
+	  if(rect.getY() + MOVE_AMOUNT <= 350){
+    	  rect.setY(rect.getY() + MOVE_AMOUNT);
+    	  moveCount++;
+    	  moveCountText.setText("Move Count: " + moveCount);
+	  }
+  }
+}
