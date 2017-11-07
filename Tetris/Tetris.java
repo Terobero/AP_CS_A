@@ -5,6 +5,8 @@ package application;
  * 2017 - 2018 
  * Hisar School
  * 
+ * Project: Tetris
+ *
  * @author	Terobero
  * Kaan Bozkurt
  */
