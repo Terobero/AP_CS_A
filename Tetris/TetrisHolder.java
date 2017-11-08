@@ -107,7 +107,7 @@ public class TetrisHolder {
 	    	  d.setX(XLIMIT / 2 + SIZE + SIZE); d.setY(SIZE);
 	    	  name = "z";
 	      }
-	      else{
+	      else{ //I
 	    	  a.setX(XLIMIT / 2 - SIZE - SIZE);
 	    	  b.setX(XLIMIT / 2 - SIZE);
 	    	  c.setX(XLIMIT / 2);

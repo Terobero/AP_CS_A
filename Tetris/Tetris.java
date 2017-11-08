@@ -5,8 +5,6 @@ package application;
  * 2017 - 2018 
  * Hisar School
  * 
- * Project: Tetris
- *
  * @author	Terobero
  * Kaan Bozkurt
  */
@@ -35,12 +33,14 @@ public class Tetris extends Application {
   private static Pane group = new Pane();
   private static Pane gameoverGroup = new Pane();
   private static Shape object;
-  private static Scene scene = new Scene(group, XLIMIT, YLIMIT);
+  private static Scene scene = new Scene(group, XLIMIT + 200, YLIMIT);
   private static Scene gameoverScene = new Scene(gameoverGroup, 500, YLIMIT);
   public static int score = 0;
   public static int mins = 0;
   private static int top = 0;
   private static int finalscore = 0;
+  private static boolean time = true;
+  private static Shape nextShape = TetrisHolder.createRect();
   
   //Creating the scene and starting the game
   public static void main(String[] args) { launch(args); }
@@ -48,7 +48,6 @@ public class Tetris extends Application {
     for(int[] a: GRID){
     	Arrays.fill(a, 0);
     }
-    
     //Game over screen preparation
     Text gameovertext = new Text("GAME\nOVER");
     gameovertext.setFill(Color.RED);
@@ -68,16 +67,21 @@ public class Tetris extends Application {
     gameoverGroup.getChildren().addAll(gameovertext, quittingtext, finalscoretext);
     
     //Creating score and time texts
+    Line line = new Line(XLIMIT, 0, XLIMIT, YLIMIT);
+    Line line2 = new Line(XLIMIT, 300, XLIMIT + 200, 300);
     Text scoretext = new Text("Score: 0");
     Text timetext = new Text("Time: 0 s");
-    scoretext.setY(15);
-    timetext.setY(45);
-    group.getChildren().addAll(scoretext, timetext);
+    scoretext.setY(350);
+    scoretext.setX(XLIMIT + 25);
+    timetext.setY(400);
+    timetext.setX(XLIMIT + 25);
+    group.getChildren().addAll(scoretext, timetext, line, line2);
     //Creating the first block and the stage
-    Shape a = TetrisHolder.createRect();
+    Shape a = nextShape;
     group.getChildren().addAll(a.a, a.b, a.c, a.d);
 	moveOnKeyPress(a);
 	object = a;
+	nextShape = TetrisHolder.createRect();
     stage.setScene(scene);
     stage.show();
     //Timer for falling blocks
@@ -107,7 +111,8 @@ public class Tetris extends Application {
   				  if(top == 30){
 					  System.exit(0);
 				  }
-  				  CheckDown(object);
+  				  if(time)
+  					  CheckDown(object);
   				  score++;
   				  scoretext.setText("Score: " + Integer.toString(score));
   			  }
@@ -159,6 +164,8 @@ public class Tetris extends Application {
           case UP:
         	  CheckTurn(shape);
         	  break;
+          case SPACE:
+        	  time = !time;
         }
       }
     });
@@ -502,13 +509,25 @@ public class Tetris extends Application {
 					  a.setY(a.getY() + SIZE);
 					  GRID[(int)a.getX()/SIZE][(int)a.getY()/SIZE] = 1;
 					  }
-				  GRID[(int)a.getX()/SIZE][(int)a.getY()/SIZE] = 1;
 			  }
 			  lines.remove(0);
 			  rects.clear();
 			  newrects.clear();
 			  
 		  } while(lines.size() > 0);
+	  rects.clear();
+	  for(Node node: pane.getChildren()) {
+		   if(node instanceof Rectangle)
+		        rects.add(node);
+		   }
+	  for(Node node: rects){
+		  Rectangle a = (Rectangle)node;
+		  try {
+			  GRID[(int)a.getX()/SIZE][(int)a.getY()/SIZE] = 1;
+		  } catch (ArrayIndexOutOfBoundsException e) {
+		  }
+	  }
+	  rects.clear();
   }
   
   /**
@@ -564,7 +583,8 @@ public class Tetris extends Application {
 		  GRID[(int)shape.d.getX()/SIZE][(int)shape.d.getY()/SIZE] = 1;
 		  DeleteRows(group);
 		  //Creating a new block and adding it to the scene
-		  Shape a = TetrisHolder.createRect();
+		  Shape a = nextShape;
+		  nextShape = TetrisHolder.createRect();
 		  object = a;
 		  group.getChildren().addAll(a.a, a.b, a.c, a.d);
 		  moveOnKeyPress(a);
