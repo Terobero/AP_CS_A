@@ -507,27 +507,24 @@ public class Tetris extends Application {
 				  if(a.getY() < lines.get(0)*SIZE){
 					  GRID[(int)a.getX()/SIZE][(int)a.getY()/SIZE] = 0;
 					  a.setY(a.getY() + SIZE);
-					  GRID[(int)a.getX()/SIZE][(int)a.getY()/SIZE] = 1;
 					  }
 			  }
 			  lines.remove(0);
 			  rects.clear();
 			  newrects.clear();
-			  
+			  for(Node node: pane.getChildren()) {
+				   if(node instanceof Rectangle)
+				        rects.add(node);
+				   }
+			  for(Node node: rects){
+				  Rectangle a = (Rectangle)node;
+				  try {
+					  GRID[(int)a.getX()/SIZE][(int)a.getY()/SIZE] = 1;
+				  } catch (ArrayIndexOutOfBoundsException e) {
+				  }
+			  }
+			  rects.clear();
 		  } while(lines.size() > 0);
-	  rects.clear();
-	  for(Node node: pane.getChildren()) {
-		   if(node instanceof Rectangle)
-		        rects.add(node);
-		   }
-	  for(Node node: rects){
-		  Rectangle a = (Rectangle)node;
-		  try {
-			  GRID[(int)a.getX()/SIZE][(int)a.getY()/SIZE] = 1;
-		  } catch (ArrayIndexOutOfBoundsException e) {
-		  }
-	  }
-	  rects.clear();
   }
   
   /**
